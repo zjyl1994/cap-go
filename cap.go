@@ -115,20 +115,20 @@ func (c *cap) RedeemChallenge(sol *Solution) *RedeemResponse {
 	hash := sha256Hash(vertoken)
 	tokenKey := id + ":" + hash
 
-	expires := time.Now().UnixMilli() + 20*60*1000
+	expires := time.Now().Add(20 * time.Minute)
 
-	tokenInfo := tokenEntry{Expires: expires}
+	tokenInfo := tokenEntry{Expires: expires.UnixMilli()}
 	tokenJSON, err := json.Marshal(tokenInfo)
 	if err != nil {
 		return &RedeemResponse{Success: false, Message: "Internal error"}
 	}
 
-	c.storage.Set("token:"+tokenKey, string(tokenJSON), time.Unix(expires/1000, (expires%1000)*1000000))
+	c.storage.Set("token:"+tokenKey, string(tokenJSON), expires)
 
 	return &RedeemResponse{
 		Success: true,
 		Token:   id + ":" + vertoken,
-		Expires: expires,
+		Expires: expires.UnixMilli(),
 	}
 }
 
