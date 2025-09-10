@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cap-go</title>
+    <script src="https://cdn.jsdelivr.net/npm/@cap.js/widget@0.1.28/cap.min.js" integrity="sha256-y/NJD938iEVzJs2wrzQ7ROFlXqH/kT9t9AFpUtXYM14=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <cap-widget id="cap" data-cap-api-endpoint="/cap/"></cap-widget>
+    <div id="result"></div> 
+    <script>
+        const capWidget = document.getElementById('cap');
+        capWidget.addEventListener("solve", (e) => {
+            const token = e.detail.token;
+            console.log(token);
+            fetch('/verify-token?token=' + token)
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data);
+                    document.getElementById('result').innerHTML = data.result?'Success':'Failed';
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+        });
+    </script>
+</body>
+
+</html>
